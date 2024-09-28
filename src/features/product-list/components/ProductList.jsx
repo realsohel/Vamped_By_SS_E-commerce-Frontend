@@ -48,26 +48,40 @@ export default function ProductList() {
     const products = useSelector(state=>state.product.products);
     const dispatch = useDispatch(selectAllProducts);
     const [filter,setFilter] = useState({});
+    const [sort,setSort] = useState({});
     
     const handleFilter =(e,section,option)=>{
       // console.log(e.target.value);
-      const newFilter = {...filter,[section.id]:option.value};
+      const newFilter = {...filter};
+      if(e.target.checked){
+        if(newFilter[section.id]){
+          newFilter[section.id].push(option.value);
+        }
+        else{
+          newFilter[section.id]=[option.value];
+        }
+      }
+      else{
+        const index = newFilter[section.id].findIndex((el) => el === option.value);
+        if (index !== -1) {
+          newFilter[section.id].splice(index, 1); // Remove the element at the found index
+        }
+      }
+
       setFilter(newFilter);
-      dispatch(fetchAllProductsBYFiltersAsync(newFilter));
-      console.log(section.id +", "+option.value);
+      console.log(section.id , option.value);
     }
     
     const handleSort=(e,option)=>{
-      const newFilter = {...filter,_sort:option.sort, _order:option.order};
-      setFilter(newFilter);
-      dispatch(fetchAllProductsBYFiltersAsync(newFilter));
-      console.log(option.sort +", "+option.order);
+      const newSort = {_sort:option.sort, _order:option.order};
+      setSort(newSort);
+      
 
     }
 
     useEffect(()=>{
-      dispatch(fetchAllProductsAsync());
-    },[dispatch])
+      dispatch(fetchAllProductsBYFiltersAsync({filter, sort}));
+    },[dispatch, filter,sort])
 
     return (
         <div className="bg-white">
@@ -368,7 +382,7 @@ export default function ProductList() {
           </nav>
         </div>
       </div>
-    </div>
+            </div>
             </main>
         </div>
     </div>

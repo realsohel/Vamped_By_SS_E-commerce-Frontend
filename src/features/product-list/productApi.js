@@ -5,11 +5,20 @@ export async function  fetchAllProducts() {
     const response = await axios.get("http://localhost:3000/products")
     return response;
 }
-export async function  fetchAllProductsByFilters(filter) {
+export async function  fetchAllProductsByFilters(filter,sort) {
 
     let queryString="";
     for(let key in filter){
-        queryString+=`${key}=${filter[key]}&`;
+        let categories = filter[key];
+
+        if(categories.length){
+            const cateValues = categories[categories.length-1];
+            queryString+=`${key}=${cateValues}&`;
+        }
+    }
+    
+    for(let key in sort){
+        queryString+=`${key}=${sort[key]}&`;
     }
     const response = await axios.get("http://localhost:3000/products?"+queryString)
     return response;
