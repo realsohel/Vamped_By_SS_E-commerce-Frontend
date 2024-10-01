@@ -6,6 +6,11 @@ export async function  fetchAllProducts() {
     return response;
 }
 
+export async function  fetchProductById(id) {
+    const response = await axios.get(`http://localhost:3000/products/${id}`)
+    return response;
+}
+
 export async function  fetchAllProductsByFilters(filter,sort,pagination) {
     let queryString="";
     for(let key in filter){

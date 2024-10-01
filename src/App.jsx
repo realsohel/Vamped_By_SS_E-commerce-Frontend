@@ -19,7 +19,7 @@ function App() {
           <Route exact path='/register'element={<SignupPage/>}/>
           <Route exact path='/cart'element={<CartPage/>}/>
           <Route exact path='/checkout'element={<Checkout/>}/>
-          <Route exact path='/product-details'element={<ProductDetailsPage/>}/>
+          <Route exact path='/product-details/:id'element={<ProductDetailsPage/>}/>
         </Routes>
       </BrowserRouter>
       
