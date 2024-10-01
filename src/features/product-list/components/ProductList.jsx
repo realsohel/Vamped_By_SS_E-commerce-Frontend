@@ -17,8 +17,8 @@ import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/2
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllProductsBYFiltersAsync, selectAllProducts } from '../productSlice';
-import { brands, category } from '../../../../test';
+import { fetchAllBrandsAsync, fetchAllCategoriessAsync, fetchAllProductsBYFiltersAsync, selectAllBrands, selectAllCategories, selectAllProducts } from '../productSlice';
+// import { brands, category } from '../../../../test';
 import { ITEMS_PER_PAGE } from '../../../app/constants';
 
 const sortOptions = [
@@ -27,18 +27,7 @@ const sortOptions = [
     { name: 'Price: High to Low', sort: 'price',order:'desc', current: false },
 ]
 
-const filters = [
-    {
-        id: 'brand',
-        name: 'brand',
-        options:  brands.map(e => ({ value: e.value, label: e.label, checked: e.checked }))
-      },
-    {
-        id: 'category',
-        name: 'Category',
-        options: category.map(e => ({ value: e.value, label: e.label, checked: e.checked }))
-    },
-]
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -47,11 +36,28 @@ export default function ProductList() {
 
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const products = useSelector(state=>state.product.products);
+    const brands = useSelector(selectAllBrands);
+    const categories = useSelector(selectAllCategories);
     const dispatch = useDispatch(selectAllProducts);
     const [filter,setFilter] = useState({});
     const [sort,setSort] = useState({});
     const [page,setPage] = useState(1);
     let totalItems = useSelector(state=>state.product.totalItems);
+    let totalPages =  Math.ceil(totalItems/ITEMS_PER_PAGE);
+
+    const filters = [
+      {
+          id: 'brand',
+          name: 'brand',
+          options:  brands
+        },
+      {
+          id: 'category',
+          name: 'Category',
+          options: categories
+          // categories.map(e => ({ value: e.value, label: e.label, checked: e.checked }))
+      },
+  ]
 
     const handleFilter =(e,section,option)=>{
       // console.log(e.target.value);
@@ -86,7 +92,9 @@ export default function ProductList() {
     useEffect(()=>{
       const pagination = {_page:page, _per_page:ITEMS_PER_PAGE};
       dispatch(fetchAllProductsBYFiltersAsync({filter, sort,pagination}));
-      console.log(products)
+      dispatch(fetchAllBrandsAsync());
+      dispatch(fetchAllCategoriessAsync());
+
     },[dispatch, filter,sort,page])
 
     useEffect(()=>{
@@ -320,66 +328,66 @@ export default function ProductList() {
             {/* Pagination */}
 
             <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-      <div className="flex flex-1 justify-between sm:hidden">
-        <a
-          href="#"
-          className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          Previous
-        </a>
-        <a
-          href="#"
-          className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          Next
-        </a>
-      </div>
-      <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm text-gray-700">
-            Showing 
-            <span className="font-medium">{' '}{(page-1)*ITEMS_PER_PAGE+1}</span> to 
-            <span className="font-medium">{' '}{page*ITEMS_PER_PAGE}</span> of{' '}
-            <span className="font-medium">{totalItems}</span> results
-          </p>
-        </div>
-        <div>
-          <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-            <a
-              href="#"
-              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            >
-              <span className="sr-only">Previous</span>
-              <ChevronLeftIcon aria-hidden="true" className="h-5 w-5" />
-            </a>
+              <div className="flex flex-1 justify-between sm:hidden">
+                <div
+                  onClick={(e)=>handlePage(page>1?page-1:page)}
+                  className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Previous
+                </div>
+                <div
+                  onClick={(e)=>handlePage(page<totalPages?page+1:page)}
+                  className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Next
+                </div>
+              </div>
+              <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm text-gray-700">
+                    Showing 
+                    <span className="font-medium">{' '}{(page-1)*ITEMS_PER_PAGE+1}</span> to 
+                    <span className="font-medium">{' '}{page*ITEMS_PER_PAGE}</span> of{' '}
+                    <span className="font-medium">{totalItems}</span> results
+                  </p>
+                </div>
+                <div>
+                  <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
+                    <div
+                      onClick={(e)=>handlePage(page>1?page-1:page)}
+                      className="cursor-pointer relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                    >
+                      <span className="sr-only">Previous</span>
+                      <ChevronLeftIcon aria-hidden="true" className="h-5 w-5" />
+                    </div>
 
-            {
-              Array.from({length: Math.ceil(totalItems/ITEMS_PER_PAGE)}).map(
-                (el,index)=>(
-                  <div
-                    onClick={(e)=>handlePage(index+1)}
-                    aria-current="page"
-                    className={`cursor-pointer relative z-10 inline-flex items-center ${index+1===page? `bg-indigo-600 text-white`:'text-gray-400'}  px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
-                  >
-                    {index+1}
-                  </div>
-                )
-              )
-            }
-            
-            <a
-              href="#"
-              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            >
-              <span className="sr-only">Next</span>
-              <ChevronRightIcon aria-hidden="true" className="h-5 w-5" />
-            </a>
-          </nav>
-        </div>
-      </div>
+                    {
+                      Array.from({length:totalPages}).map(
+                        (el,index)=>(
+                          <div
+                            onClick={(e)=>handlePage(index+1)}
+                            aria-current="page"
+                            className={`cursor-pointer relative z-10 inline-flex items-center ${index+1===page? `bg-indigo-600 text-white`:'text-gray-400'}  px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                          >
+                            {index+1}
+                          </div>
+                        )
+                      )
+                    }
+                    
+                    <div
+                      onClick={(e)=>handlePage(page<totalPages?page+1:page)}
+                      className="cursor-pointer relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                    >
+                      <span className="sr-only">Next</span>
+                      <ChevronRightIcon aria-hidden="true" className="h-5 w-5" />
+                    </div>
+                  </nav>
+                </div>
+              </div>
             </div>
-            </main>
-        </div>
+        </main>
+      </div>
     </div>
         
     );

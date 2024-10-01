@@ -5,8 +5,8 @@ export async function  fetchAllProducts() {
     const response = await axios.get("http://localhost:3000/products")
     return response;
 }
-export async function  fetchAllProductsByFilters(filter,sort,pagination) {
 
+export async function  fetchAllProductsByFilters(filter,sort,pagination) {
     let queryString="";
     for(let key in filter){
         let categories = filter[key];
@@ -25,5 +25,16 @@ export async function  fetchAllProductsByFilters(filter,sort,pagination) {
     }
     const response = await axios.get("http://localhost:3000/products?"+queryString)
     console.log(response.data);
+    return response;
+}
+
+
+export async function  fetchAllCategiores() {
+    const response = await axios.get("http://localhost:3000/categories")
+    return response;
+}
+
+export async function  fetchAllBrands() {
+    const response = await axios.get("http://localhost:3000/brands")
     return response;
 }
