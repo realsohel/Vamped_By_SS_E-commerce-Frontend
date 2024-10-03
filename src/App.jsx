@@ -6,6 +6,7 @@ import SignupPage from './pages/SignupPage'
 import CartPage from './pages/CartPage'
 import Checkout from './pages/Checkout'
 import ProductDetailsPage from './pages/ProductDetailsPage'
+import Protected from './features/auth/Protected'
 
 
 function App() {
@@ -14,12 +15,12 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route exact path='/'element={<Home/>}/>
+          <Route exact path='/'element={<Protected><Home/></Protected> }/>
           <Route exact path='/login'element={<LoginPage/>}/>
           <Route exact path='/register'element={<SignupPage/>}/>
-          <Route exact path='/cart'element={<CartPage/>}/>
-          <Route exact path='/checkout'element={<Checkout/>}/>
-          <Route exact path='/product-details/:id'element={<ProductDetailsPage/>}/>
+          <Route exact path='/cart'element={<Protected><CartPage/></Protected>}/>
+          <Route exact path='/checkout'element={<Protected><Checkout/></Protected>}/>
+          <Route exact path='/product-details/:id'element={<Protected><ProductDetailsPage/></Protected>}/>
         </Routes>
       </BrowserRouter>
       

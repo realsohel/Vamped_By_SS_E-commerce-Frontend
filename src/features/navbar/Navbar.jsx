@@ -14,9 +14,9 @@ const navigation = [
     { name: 'Team', href: '#', current: false },
 ]
 const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
+    { name: 'Your Profile', link: '/' },
+    { name: 'Settings', link: '/' },
+    { name: 'Sign out', link: '/login' },
 ]
 
 function classNames(...classes) {
@@ -87,12 +87,12 @@ const Navbar = ({children}) => {
                     >
                       {userNavigation.map((item) => (
                         <MenuItem key={item.name}>
-                          <a
-                            href={item.href}
+                          <Link
+                            to={item.link}
                             className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
                           >
                             {item.name}
-                          </a>
+                          </Link>
                         </MenuItem>
                       ))}
                     </MenuItems>
@@ -156,7 +156,7 @@ const Navbar = ({children}) => {
                   <DisclosureButton
                     key={item.name}
                     as="a"
-                    href={item.href}
+                    href={item.link}
                     className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   >
                     {item.name}

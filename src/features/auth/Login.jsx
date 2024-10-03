@@ -2,31 +2,21 @@ import React, { useEffect, useState } from 'react'
 import avatar from "/images/avatar.png"
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
-import { Link  } from 'react-router-dom';
+import { Link, Navigate  } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { checkUserAsync, selectloggedInUser } from './authSlice';
 
 
 const Login = () => {
     
-    const[formData,setFormData] = useState({
-        email:"",
-        password:""
-    })
-
-    const {email,password} = formData;
-    // const navigate = useNavigate();
-
-    // const handleInputChange = e => {
-    //     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // };
-
-    // const handleSubmit = async (e)=>{
-    //     e.preventDefault();
-    //     console.log(formData);
-        
-    // }
+    const dispatch = useDispatch();
+    const {register, handleSubmit, watch, formState:{errors}} = useForm();
+    const user = useSelector(selectloggedInUser);
 
     return (
         <div className=' w-full px-4 py-6 z-50 bg-blue-400 fixed'>
+            {user && <Navigate to="/" replace={true}/>}
             <div className='max-w-[450px] my-4 h-[500px] mx-auto bg-black/75 text-white rounded-lg  '>
                 <div className='mt-6  items-center  pt-12'>
                     <div className=' w-[450px] text-2xl font-semibold   my-4  mx-auto absolute top-1'>
@@ -37,34 +27,36 @@ const Login = () => {
 
                     <img src={avatar}  className="mx-auto h-32 w-32 items-center " alt="" />
                     {/* onSubmit={handleSubmit} */}
-                    <form  className='w-full flex flex-col pt-4' >   
+                    <form  className='w-full flex flex-col pt-4' 
+                        onSubmit={handleSubmit((data)=>{
+                            console.log(data);
+                            dispatch(checkUserAsync({email:data.email, password:data.password}))
+                        })} 
+                    >   
                         <div className='flex  mx-auto rounded-md p-2 my-2 bg-gray-700 focus:outline-none '>
                             <span className=''>
                                 <MdEmail size={40} className='mx-2'/> 
                             </span>
                             <input
-                                // onChange={handleInputChange}
-                                name='email'
+                                {...register("email", { required: "enter a valid email", maxLength: 50 })}
                                 className=' mx-8 text-lg  tracking-wider bg-gray-700 focus:outline-none'
                                 type='email'
                                 placeholder='Email'
-                                autoComplete='email'
-                                required
                             />
                         </div>
+                        {errors.email && <p className='text-red-500 mx-auto p-2'>{errors.email.message}</p>}
                         
                         <div className='flex  mx-auto rounded-md p-2 my-2 bg-gray-700 focus:outline-none  '>
                             <RiLockPasswordFill size={40} className='mx-2'/> 
                             <input
                                 className=' mx-8 text-lg bg-gray-700 focus:outline-none'
                                 // onChange={handleInputChange}
-                                name='password'
+                                {...register("password", { required: "password is required", maxLength: 20 })}
                                 type='password'
                                 placeholder='Password'
-                                autoComplete='password'
-                                required
                             />
                         </div>
+                        {errors.password && <p className='text-red-500 mx-auto p-2'>{errors.password.message}</p>}
                         <button className='hover:bg-blue-400 bg-blue-300 mx-14 rounded-md py-3 my-4  font-bold'>
                             Login
                         </button>
