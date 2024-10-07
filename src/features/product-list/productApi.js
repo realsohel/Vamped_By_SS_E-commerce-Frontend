@@ -29,7 +29,7 @@ export async function  fetchAllProductsByFilters(filter,sort,pagination) {
         queryString+=`${key}=${pagination[key]}&`;
     }
     const response = await axios.get("http://localhost:3000/products?"+queryString)
-    console.log(response.data);
+    // console.log(response.data);
     return response;
 }
 

@@ -7,10 +7,24 @@ import CartPage from './pages/CartPage'
 import Checkout from './pages/Checkout'
 import ProductDetailsPage from './pages/ProductDetailsPage'
 import Protected from './features/auth/Protected'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectloggedInUser } from './features/auth/authSlice'
+import { fetchItemsByUserId } from './features/cart/cartApi'
+import { useEffect } from 'react'
+import { fetchItemsByUserIdAsync, selectError } from './features/cart/cartSlice'
 
 
 function App() {
-
+  const dispatch = useDispatch();
+  const user = useSelector(selectloggedInUser);
+  const error = useSelector(selectError)
+  console.log(user)
+  useEffect(()=>{
+    if(user){
+      console.log(user[0])
+      dispatch(fetchItemsByUserIdAsync(user[0].id));
+    }
+  },[dispatch, user])
   return (
     <>
       <BrowserRouter>

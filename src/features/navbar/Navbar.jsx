@@ -1,7 +1,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Children } from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { selectCart } from '../cart/cartSlice'
 
 const user = {
     name: 'Tom Cook',
@@ -23,10 +25,10 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-
-
 const Navbar = ({children}) => {
-    return (
+
+  const items = useSelector(selectCart);
+  return (
         <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -68,9 +70,13 @@ const Navbar = ({children}) => {
                       <ShoppingCartIcon aria-hidden="true" className="h-6 w-6" />
                     </button>
                   </Link>
+                  {
+                    items.length >0 ?
                     <span className="inline-flex items-center rounded-md bg-red-50 mb-7 z-10 -ml-2 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                        3
+                      {items.length}
                     </span>
+                    :""
+                  }
 
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
@@ -147,9 +153,14 @@ const Navbar = ({children}) => {
                     <ShoppingCartIcon aria-hidden="true" className="h-6 w-6" />
                   </button>
                 </Link>
-                <span className="inline-flex items-center rounded-md bg-red-50 mb-7 z-10 -ml-2 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                    3
-                </span>
+                {
+                  items.length >0 ?
+                  <span className="inline-flex items-center rounded-md bg-red-50 mb-7 z-10 -ml-2 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                    {items.length}
+                  </span>
+                  :""
+                }
+                
               </div>
               <div className="mt-3 space-y-1 px-2">
                 {userNavigation.map((item) => (
